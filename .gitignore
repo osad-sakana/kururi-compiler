@@ -1,0 +1,33 @@
+# Rust build
+/target/
+**/target/
+
+# Cargo package files
+Cargo.lock
+
+# IDEs and editors
+.idea/
+.vscode/
+*.sw?
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# By default, ignore node_modules (if any JS tooling is used)
+node_modules/
+
+# Python virtual environments (in case of tooling)
+.venv/
+venv/
+
+# Backup files
+*~
+*.bak
+
+# dotenv environment files
+.env
+.env.* 
