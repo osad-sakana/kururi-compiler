@@ -1,1 +1,4 @@
-hello kilobyte
+function main(): void{
+    const moji: string = "Hello World by Kururi!"
+    output(moji)
+}

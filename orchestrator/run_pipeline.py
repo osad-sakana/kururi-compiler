@@ -3,58 +3,52 @@ import requests
 import sys
 
 
-LEXER_URL = "http://localhost:60000/lex"
-PARSER_URL = "http://localhost:60001/parse"
-SEMANTIC_URL = "http://localhost:60002/semantic"
-CODEGEN_URL = "http://localhost:60003/codegen"
-
+COMPILER_URL = "http://localhost:8080"
 
 def run_pipeline(source_code: str) -> str:
-    # 1. lexer 字句解析
+    # 統合されたコンパイラサービスで全パイプラインを実行
     payload = {"code": source_code}
-    print(f"\n[LEXER] POST {LEXER_URL}")
+    print(f"\n[COMPILER] POST {COMPILER_URL}/compile")
     print("  request payload:", payload)
-    r = requests.post(LEXER_URL, json=payload)
+    r = requests.post(f"{COMPILER_URL}/compile", json=payload)
     print("  response status:", r.status_code)
     print("  response body  :", r.text)
     r.raise_for_status()
-    tokens = r.json().get("tokens")
-    print("  parsed tokens  :", tokens)
-
-    # 2. parser 構文解析
-    payload = {"tokens": tokens}
-    print(f"\n[PARSER] POST {PARSER_URL}")
-    print("  request payload:", payload)
-    r = requests.post(PARSER_URL, json=payload)
-    print("  response status:", r.status_code)
-    print("  response body  :", r.text)
-    r.raise_for_status()
-    ast = r.json().get("ast")
-    print("  parsed AST     :", ast)
-
-    # 3. semantic セマンティック解析
-    payload = {"ast": ast}
-    print(f"\n[SEMANTIC] POST {SEMANTIC_URL}")
-    print("  request payload:", payload)
-    r = requests.post(SEMANTIC_URL, json=payload)
-    print("  response status:", r.status_code)
-    print("  response body  :", r.text)
-    r.raise_for_status()
-    checked_ast = r.json().get("checked_ast")
-    print("  checked AST    :", checked_ast)
-
-    # 4. codegen コード生成
-    payload = {"checked_ast": checked_ast}
-    print(f"\n[CODEGEN] POST {CODEGEN_URL}")
-    print("  request payload:", payload)
-    r = requests.post(CODEGEN_URL, json=payload)
-    print("  response status:", r.status_code)
-    print("  response body  :", r.text)
-    r.raise_for_status()
-    code = r.json().get("code")
-    print("\n[CODEGEN] generated code:\n", code)
+    
+    result = r.json()
+    tokens = result.get("tokens")
+    ast = result.get("ast")
+    checked_ast = result.get("checked_ast")
+    code = result.get("code")
+    
+    print("\n[COMPILER] Pipeline Results:")
+    print("  tokens      :", tokens)
+    print("  ast         :", ast)
+    print("  checked_ast :", checked_ast)
+    print("  final code  :", code)
 
     return code
+
+def run_individual_step(step: str, source_code: str = None, tokens: list = None, ast: list = None, checked_ast: list = None):
+    """個別ステップの実行（デバッグ用）"""
+    if step == "lex" and source_code:
+        payload = {"code": source_code}
+        r = requests.post(f"{COMPILER_URL}/lex", json=payload)
+        return r.json()
+    elif step == "parse" and tokens:
+        payload = {"tokens": tokens}
+        r = requests.post(f"{COMPILER_URL}/parse", json=payload)
+        return r.json()
+    elif step == "semantic" and ast:
+        payload = {"ast": ast}
+        r = requests.post(f"{COMPILER_URL}/semantic", json=payload)
+        return r.json()
+    elif step == "codegen" and checked_ast:
+        payload = {"checked_ast": checked_ast}
+        r = requests.post(f"{COMPILER_URL}/codegen", json=payload)
+        return r.json()
+    else:
+        raise ValueError(f"Invalid step: {step} or missing required parameters")
 
 
 def main():

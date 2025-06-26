@@ -1,25 +1,7 @@
 services:
-  lexer:
-    build: ./lexer
-    ports: ["60000:5000"]
-    networks: [compiler-net]
-
-  parser:
-    build: ./parser
-    ports: ["60001:5001"]
-    depends_on: [lexer]
-    networks: [compiler-net]
-
-  semantic:
-    build: ./semantic
-    ports: ["60002:5002"]
-    depends_on: [parser]
-    networks: [compiler-net]
-
-  codegen:
-    build: ./codegen
-    ports: ["60003:5003"]
-    depends_on: [semantic]
+  compiler:
+    build: ./compiler
+    ports: ["8080:8080"]
     networks: [compiler-net]
 
 networks:
