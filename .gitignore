@@ -28,6 +28,12 @@ venv/
 *~
 *.bak
 
+# Temporary test files
+test_output.py
+*_test.py
+*.tmp
+*.temp
+
 # dotenv environment files
 .env
 .env.* 
@@ -35,3 +41,6 @@ venv/
 ref.md
 
 .claude/
+
+# Keep usage.md in repository
+!usage.md
