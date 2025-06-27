@@ -18,8 +18,11 @@
 
 pub mod types;
 pub mod error;
+pub mod token;
+pub mod ast;
 pub mod lexer;
-pub mod parser;
+// pub mod parser;
+pub mod parser_new;
 pub mod semantic;
 pub mod codegen;
 pub mod compiler;
