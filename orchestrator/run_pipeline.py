@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import requests
 import sys
+import json
 
 
 COMPILER_URL = "http://localhost:8080"
@@ -9,11 +10,22 @@ def run_pipeline(source_code: str) -> str:
     # 統合されたコンパイラサービスで全パイプラインを実行
     payload = {"code": source_code}
     print(f"\n[COMPILER] POST {COMPILER_URL}/compile")
-    print("  request payload:", payload)
-    r = requests.post(f"{COMPILER_URL}/compile", json=payload)
-    print("  response status:", r.status_code)
-    print("  response body  :", r.text)
-    r.raise_for_status()
+    print("  request payload:", {"code": source_code[:50] + "..." if len(source_code) > 50 else source_code})
+    
+    try:
+        r = requests.post(f"{COMPILER_URL}/compile", json=payload)
+        print("  response status:", r.status_code)
+        
+        if r.status_code != 200:
+            print("  error response  :", r.text)
+            r.raise_for_status()
+        
+        print("  response body  :", r.text[:200] + "..." if len(r.text) > 200 else r.text)
+        r.raise_for_status()
+    except requests.exceptions.JSONDecodeError as e:
+        print(f"  JSON decode error: {e}")
+        print(f"  raw response: {r.text}")
+        raise
     
     result = r.json()
     tokens = result.get("tokens")
