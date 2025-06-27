@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 依存関係のキャッシュを最適化するため先にCargo.tomlをコピー
 COPY Cargo.toml .
-RUN mkdir src && echo "fn main() {}" > src/main.rs && cargo build --release && rm -rf src
+RUN mkdir src && echo "fn main() {}" > src/main.rs && echo "pub fn lib_fn() {}" > src/lib.rs && cargo build --release && rm -rf src
 
 # ソースコードをコピーしてビルド
 COPY src src

@@ -1,4 +1,28 @@
 function main(): void{
-    const moji: string = "Hello World by Kururi!"
-    output(moji)
+    output("掛け算九九の表")
+    output("=================")
+    
+    // 外側のループ（1から9まで）
+    for i < 9 {
+        let row: string = ""
+        
+        // 内側のループ（1から9まで）
+        for j < 9 {
+            // forループのカウンターは0から始まるので、実際の値は+1
+            let num1: number = i + 1
+            let num2: number = j + 1
+            let result: number = num1 * num2
+            
+            // 結果を文字列に変換して行に追加
+            // 幅を揃えるため、結果が1桁の場合はスペースを追加
+            if result < 10 {
+                row = row + " " + result + " "
+            } else {
+                row = row + result + " "
+            }
+        }
+        
+        // 行を出力
+        output(row)
+    }
 }
